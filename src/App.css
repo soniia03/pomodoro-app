@@ -1,0 +1,123 @@
+/* ===== VARIABLES CSS GLOBALES ===== */
+:root {
+  /* Colores para modo trabajo */
+  --work-primary: #16a085; /* teal primary (less aggressive than red) */
+  --work-secondary: #138f75; /* darker teal */
+  --work-light: #48c9b0; /* lighter teal */
+  --work-dark: #0f6e61; /* dark teal */
+  
+  /* Colores para modo descanso */
+  --break-primary: #2ecc71;
+  --break-secondary: #27ae60;
+  --break-light: #55efc4;
+  --break-dark: #009432;
+  
+  /* Colores base */
+  --background-dark: #2c3e50;
+  --background-darker: #34495e;
+  --text-light: #ecf0f1;
+  --text-lighter: #ffffff;
+  --text-muted: #bdc3c7;
+  
+  /* Colores de componentes */
+  --card-bg: rgba(52, 73, 94, 0.9);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-light: 0 4px 16px rgba(0, 0, 0, 0.2);
+  
+  /* Bordes */
+  --border-radius: 16px;
+  --border-radius-sm: 8px;
+  
+  /* Transiciones */
+  --transition: all 0.3s ease;
+  --transition-slow: all 0.5s ease;
+}
+
+/* ===== RESET Y BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-darker) 100%);
+  color: var(--text-light);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ===== APP PRINCIPAL ===== */
+.app {
+  height: 100%;
+  padding: 20px;
+  transition: var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fondos diferentes según el modo */
+.appWork {
+  background: linear-gradient(135deg, var(--work-primary) 0%, var(--work-dark) 100%);
+}
+
+.appBreak {
+  background: linear-gradient(135deg, var(--break-primary) 0%, var(--break-dark) 100%);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 24px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 3rem;
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+  grid-column: 1 / -1;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--card-border);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 15px;
+  }
+  
+  .container {
+    gap: 15px;
+  }
+  
+  .header {
+    font-size: 2.2rem;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    font-size: 1.8rem;
+  }
+}

@@ -1,0 +1,286 @@
+.timer {
+  grid-column: 1;
+  display: flex;
+  flex-direction: row; /* colocar display y mascota lado a lado */
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  min-height: 0;
+}
+
+.timer-display {
+  text-align: center;
+  padding: 40px 30px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.timer-work {
+  border-color: var(--work-primary);
+  box-shadow: 0 8px 32px rgba(22, 160, 133, 0.18);
+}
+
+.timer-break {
+  border-color: #55efc4;
+  box-shadow: 0 8px 32px rgba(46, 204, 113, 0.3);
+}
+
+.timer-alert {
+  border-color: #ff9ff3 !important;
+  box-shadow: 0 0 20px rgba(255, 159, 243, 0.4) !important;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 10px rgba(255, 159, 243, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 159, 243, 0.8); }
+  100% { box-shadow: 0 0 10px rgba(255, 159, 243, 0.4); }
+}
+
+.timer-title {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+.time {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+  font-family: 'Courier New', monospace;
+  background: linear-gradient(135deg, #ffffff, #bdc3c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.time-low {
+  color: #ff9ff3 !important;
+  text-shadow: 0 0 10px rgba(255, 159, 243, 0.5);
+}
+
+.time-pulse {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.warning-icon {
+  font-size: 0.6em;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0,-8px,0);
+  }
+  70% {
+    transform: translate3d(0,-4px,0);
+  }
+  90% {
+    transform: translate3d(0,-2px,0);
+  }
+}
+
+/* Barra de progreso */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  margin: 25px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s ease;
+  position: relative;
+}
+
+.progress-work {
+  background: linear-gradient(90deg, var(--work-light), var(--work-primary));
+}
+
+.progress-break {
+  background: linear-gradient(90deg, #55efc4, #2ecc71);
+}
+
+.session-info {
+  margin-top: 15px;
+}
+
+.sessions-counter {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.sessions-counter strong {
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.time-warning {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 159, 243, 0.12);
+  border: 1px solid rgba(255, 159, 243, 0.18);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.mode-indicator {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.work-indicator {
+  background: rgba(22, 160, 133, 0.12);
+  color: var(--work-light);
+  border: 1px solid rgba(22, 160, 133, 0.18);
+}
+
+.break-indicator {
+  background: rgba(46, 204, 113, 0.2);
+  color: #55efc4;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .time {
+    font-size: 3.5rem;
+  }
+  
+  .timer-display {
+    padding: 25px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .time {
+    font-size: 2.8rem;
+  }
+}
+
+/* --- Mascota decorativa (gato) --- */
+.mascot {
+  margin-top: 0; /* si está al lado no necesita margen superior */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 160px;
+  flex: 0 0 160px;
+  height: 120px;
+}
+.mascot-svg {
+  width: 140px;
+  height: 120px;
+  overflow: visible;
+  transition: transform 0.25s ease;
+}
+
+/* Idle floating animation */
+.mascot-idle .mascot-svg {
+  animation: mascotFloat 4s ease-in-out infinite;
+}
+
+@keyframes mascotFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* Pulse/sync animation when `pulse` state toggles */
+.mascot-pulse .mascot-svg {
+  animation: mascotBeat 0.9s ease-in-out infinite;
+}
+
+@keyframes mascotBeat {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  60% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+/* Tail wagging */
+.mascot-tail {
+  transform-origin: 108px 74px; /* ajustado al punto de base de la cola del gato */
+  transition: transform 0.12s linear;
+}
+
+.mascot-pulse .mascot-tail {
+  animation: tailWag 0.45s ease-in-out infinite;
+}
+
+@keyframes tailWag {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-18deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(12deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Color variants depending on mode */
+.mascot-work .mascot-body { fill: var(--work-primary); }
+.mascot-break .mascot-body { fill: var(--break-primary); }
+
+/* subtle eye blink when pulse */
+.mascot-pulse .mascot-eye { transform-origin: center; animation: eyeBlink 1.2s infinite ease-in-out; }
+@keyframes eyeBlink { 0%, 90% { transform: scaleY(1); } 95% { transform: scaleY(0.12); } 100% { transform: scaleY(1); } }
+
+/* ensure mascot doesn't force layout overflow on small screens */
+@media (max-width: 768px) {
+  .timer {
+    flex-direction: column; /* en móvil apila verticalmente */
+    align-items: stretch;
+  }
+
+  .time {
+    font-size: 3.5rem;
+  }
+  
+  .timer-display {
+    padding: 25px 15px;
+    height: auto;
+  }
+
+  .mascot {
+    width: 100%;
+    flex: 0 0 auto;
+    margin-top: 18px;
+    justify-content: center;
+    height: auto;
+  }
+}

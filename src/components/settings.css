@@ -1,0 +1,161 @@
+.settingsOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.settingsModal {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  width: 90%;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--card-border);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--text-lighter);
+}
+
+/* Mensajes */
+.message {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: var(--border-radius-sm);
+  text-align: center;
+  font-weight: bold;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.messageSuccess {
+  background: rgba(46, 204, 113, 0.2);
+  color: var(--break-light);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.messageError {
+  background: rgba(22, 160, 133, 0.12);
+  color: var(--work-light);
+  border: 1px solid rgba(22, 160, 133, 0.18);
+}
+
+.settingGroup {
+  margin-bottom: 25px;
+}
+
+.settingGroup label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--text-lighter);
+  font-size: 1.1rem;
+}
+
+.settingInput {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  transition: var(--transition);
+}
+
+.settingInput:focus {
+  outline: none;
+  border-color: var(--break-primary);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.settingsButtons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.saveBtn, .cancelBtn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: var(--transition);
+  min-width: 120px;
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, var(--break-primary), var(--break-secondary));
+  color: white;
+}
+
+.saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.cancelBtn {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+}
+
+.cancelBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settingsModal {
+    padding: 25px;
+    margin: 20px;
+  }
+  
+  .settingsButtons {
+    flex-direction: column;
+  }
+}
