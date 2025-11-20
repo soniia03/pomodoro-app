@@ -116,7 +116,7 @@ function App() {
   return (
     <div className={`app ${mode === 'work' ? 'appWork' : 'appBreak'}`}>
       <div className="container">
-        <h1 className="header">🍅 Pomodoro Timer</h1>
+        <h1 className="header">🍅 Pomodoro </h1>
         
         <Timer 
           timeLeft={timeLeft} 
