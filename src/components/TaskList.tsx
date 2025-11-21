@@ -1,152 +1,168 @@
-import { useState } from 'react';
-import './TaskList.css'; // Cambié a .css normal en lugar de .module.css
+import { useState, useMemo } from 'react';
+import './History.css';
 
-function TaskList({ 
-  tasks, 
-  onAddTask, 
-  onToggleTask, 
-  onDeleteTask 
-}: { 
-  tasks: {id: number, text: string, completed: boolean, createdAt: string}[];
-  onAddTask: (taskText: string) => void;
-  onToggleTask: (taskId: number) => void;
-  onDeleteTask: (taskId: number) => void;
-}) {
-  // INPUT CONTROLADO
-  const [newTask, setNewTask] = useState('');
-  // FILTRO DINÁMICO
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
-  // REORDENAR LISTA - DRAG & DROP
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+interface Session {
+  id: number;
+  taskName: string;
+  duration: number;
+  completedAt: string;
+  date: string;
+  status: 'completed' | 'interrupted' | 'cancelled';
+  pomodoros: number;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAddTask(newTask);
-    setNewTask('');
+interface HistoryProps {
+  sessions: Session[];
+  onClearHistory: () => void;
+  onDeleteSession: (sessionId: number) => void;
+}
+
+function History({ 
+  sessions, 
+  onClearHistory,
+  onDeleteSession 
+}: HistoryProps) {
+  const [filter, setFilter] = useState<'all' | 'completed' | 'interrupted' | 'cancelled'>('all');
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+
+  // Filtrar sesiones
+  const filteredSessions = useMemo(() => {
+    if (filter === 'all') return sessions;
+    return sessions.filter(session => session.status === filter);
+  }, [sessions, filter]);
+
+  // Estadísticas
+  const stats = useMemo(() => {
+    const totalSessions = sessions.length;
+    const completedSessions = sessions.filter(s => s.status === 'completed').length;
+    const totalPomodoros = sessions.reduce((sum, session) => sum + session.pomodoros, 0);
+
+    return {
+      totalSessions,
+      completedSessions,
+      totalPomodoros,
+      completionRate: totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0
+    };
+  }, [sessions]);
+
+  const getStatusIcon = (status: Session['status']): string => {
+    switch (status) {
+      case 'completed': return '✅';
+      case 'interrupted': return '⏸️';
+      case 'cancelled': return '❌';
+      default: return '❓';
+    }
   };
 
-  // FILTRADO DE ELEMENTOS
-  const filteredTasks = tasks.filter(task => {
-    if (filter === 'active') return !task.completed;
-    if (filter === 'completed') return task.completed;
-    return true;
-  });
-
-  // FUNCIONES DRAG & DROP
-  const handleDragStart = (index: number) => {
-    setDragIndex(index);
+  const getStatusText = (status: Session['status']): string => {
+    switch (status) {
+      case 'completed': return 'Completada';
+      case 'interrupted': return 'Interrumpida';
+      case 'cancelled': return 'Cancelada';
+      default: return 'Desconocida';
+    }
   };
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
+  const handleSessionClick = (session: Session) => {
+    setSelectedSession(session);
   };
 
-  const handleDrop = (index: number) => {
-    if (dragIndex === null || dragIndex === index) return;
-    
-    console.log('Tarea reordenada de posición', dragIndex, 'a', index);
-    setDragIndex(null);
+  const closeModal = () => {
+    setSelectedSession(null);
   };
-
-  const completedTasks = tasks.filter(task => task.completed).length;
-  const totalTasks = tasks.length;
 
   return (
-    <div className="task-list">
-      <h3 className="task-title">📝 Lista de Tareas</h3>
-      
-      {/* FORMULARIO CON INPUT CONTROLADO */}
-      <form onSubmit={handleSubmit} className="task-form">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="¿Qué necesitas hacer?..."
-          className="task-input"
-        />
-        <button type="submit" className="add-btn">
-          ➕ Agregar
-        </button>
-      </form>
-
-      {/* FILTROS INTERACTIVOS */}
-      <div className="task-filters">
-        <button 
-          className={`filter-btn ${filter === 'all' ? 'filter-btn-active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          Todas ({totalTasks})
-        </button>
-        <button 
-          className={`filter-btn ${filter === 'active' ? 'filter-btn-active' : ''}`}
-          onClick={() => setFilter('active')}
-        >
-          Pendientes ({totalTasks - completedTasks})
-        </button>
-        <button 
-          className={`filter-btn ${filter === 'completed' ? 'filter-btn-active' : ''}`}
-          onClick={() => setFilter('completed')}
-        >
-          Completadas ({completedTasks})
-        </button>
+    <div className="history">
+      <div className="history-header">
+        <h3>📊 Historial de Sesiones</h3>
+        <div className="history-actions">
+          <button 
+            onClick={onClearHistory}
+            className="clear-btn"
+            disabled={sessions.length === 0}
+          >
+            🗑️ Limpiar
+          </button>
+        </div>
       </div>
 
-      {/* BARRA DE PROGRESO */}
-      <div className="progress">
-        {totalTasks > 0 ? (
-          <div className="progress-info">
-            <span>
-              {completedTasks} de {totalTasks} tareas completadas
-            </span>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${(completedTasks / totalTasks) * 100}%` }}
-              ></div>
-            </div>
-            <span className="progress-percent">
-              {Math.round((completedTasks / totalTasks) * 100)}%
-            </span>
+      {/* Panel de Estadísticas */}
+      <div className="stats-panel">
+        <div className="stat-card">
+          <div className="stat-value">{stats.totalSessions}</div>
+          <div className="stat-label">Total Sesiones</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-value">{stats.completedSessions}</div>
+          <div className="stat-label">Completadas</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-value">{stats.totalPomodoros}</div>
+          <div className="stat-label">Pomodoros</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-value">{Math.round(stats.completionRate)}%</div>
+          <div className="stat-label">Tasa de Éxito</div>
+        </div>
+      </div>
+
+      {/* Filtro simple */}
+      <div className="filter-controls">
+        <select 
+          value={filter} 
+          onChange={(e) => setFilter(e.target.value as any)}
+          className="filter-select"
+        >
+          <option value="all">Todas las sesiones</option>
+          <option value="completed">Completadas</option>
+          <option value="interrupted">Interrumpidas</option>
+          <option value="cancelled">Canceladas</option>
+        </select>
+      </div>
+
+      {/* Lista de Sesiones */}
+      <div className="sessions-list">
+        {filteredSessions.length === 0 ? (
+          <div className="no-sessions">
+            <p>📝 Comienza tu primera sesión Pomodoro</p>
+            <small>Tu historial se llenará aquí automáticamente</small>
           </div>
         ) : (
-          <p className="no-progress">¡Agrega tu primera tarea!</p>
-        )}
-      </div>
-
-      {/* LISTA DINÁMICA CON DRAG & DROP */}
-      <div className="tasks">
-        {filteredTasks.length === 0 ? (
-          <p className="no-tasks">
-            {filter === 'all' 
-              ? '🎉 ¡No hay tareas! Agrega una para comenzar.' 
-              : filter === 'active' 
-                ? '✅ ¡No hay tareas pendientes!' 
-                : '📝 No hay tareas completadas'
-            }
-          </p>
-        ) : (
-          filteredTasks.map((task, index) => (
+          filteredSessions.map(session => (
             <div 
-              key={task.id} 
-              className={`task-item ${task.completed ? 'task-item-completed' : ''} ${dragIndex === index ? 'dragging' : ''}`}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDrop={() => handleDrop(index)}
+              key={session.id} 
+              className={`session-item ${session.status}`}
+              onClick={() => handleSessionClick(session)}
             >
-              <span className="drag-handle">⠿</span>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => onToggleTask(task.id)}
-                className="task-checkbox"
-              />
-              <span className="task-text">{task.text}</span>
-              <small className="task-time">{task.createdAt}</small>
+              <div className="session-header">
+                <div className="session-task">{session.taskName}</div>
+                <div className="session-status">
+                  <span className="status-icon">{getStatusIcon(session.status)}</span>
+                  <span className="status-text">{getStatusText(session.status)}</span>
+                </div>
+              </div>
+              
+              <div className="session-details">
+                <div className="session-info">
+                  <span className="info-item">
+                    <strong>Duración:</strong> {session.duration}min
+                  </span>
+                  <span className="info-item">
+                    <strong>Pomodoros:</strong> {session.pomodoros}
+                  </span>
+                </div>
+                <div className="session-time">
+                  {session.completedAt}
+                </div>
+              </div>
+
               <button 
-                onClick={() => onDeleteTask(task.id)} 
-                className="delete-btn"
-                title="Eliminar tarea"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteSession(session.id);
+                }}
+                className="delete-session-btn"
+                title="Eliminar sesión"
               >
                 🗑️
               </button>
@@ -155,14 +171,56 @@ function TaskList({
         )}
       </div>
 
-      {/* INSTRUCCIONES DRAG & DROP */}
-      {filteredTasks.length > 0 && (
-        <div className="drag-instructions">
-          <small>💡 Arrastra las tareas para reordenarlas</small>
+      {/* Modal de Detalles */}
+      {selectedSession && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h4>Detalles de la Sesión</h4>
+              <button onClick={closeModal} className="close-modal">✕</button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="detail-row">
+                <strong>Tarea:</strong>
+                <span>{selectedSession.taskName}</span>
+              </div>
+              <div className="detail-row">
+                <strong>Estado:</strong>
+                <span className={`status-badge ${selectedSession.status}`}>
+                  {getStatusIcon(selectedSession.status)} {getStatusText(selectedSession.status)}
+                </span>
+              </div>
+              <div className="detail-row">
+                <strong>Duración:</strong>
+                <span>{selectedSession.duration} minutos</span>
+              </div>
+              <div className="detail-row">
+                <strong>Pomodoros completados:</strong>
+                <span>{selectedSession.pomodoros}</span>
+              </div>
+              <div className="detail-row">
+                <strong>Fecha y hora:</strong>
+                <span>{selectedSession.completedAt}</span>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                onClick={() => {
+                  onDeleteSession(selectedSession.id);
+                  closeModal();
+                }}
+                className="delete-btn"
+              >
+                🗑️ Eliminar Sesión
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-export default TaskList;
+export default History;
