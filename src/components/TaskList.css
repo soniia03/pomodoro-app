@@ -5,7 +5,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   grid-column: 2;
-  grid-row: 2; /* ocupar solo la fila de contenido */
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -239,6 +239,7 @@
   flex: 1;
   font-size: 1rem;
   transition: all 0.3s ease;
+  word-break: break-word;
 }
 
 .task-item-completed .task-text {
@@ -254,23 +255,25 @@
 }
 
 .delete-btn {
-  background: rgba(22, 160, 133, 0.12);
-  color: var(--work-primary);
-  border: 1px solid rgba(22, 160, 133, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
   width: 32px;
   height: 32px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
 }
 
 .delete-btn:hover {
-  background: rgba(22, 160, 133, 0.18);
-  transform: scale(1.06);
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .no-tasks {
@@ -282,6 +285,136 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   border: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* ===== ESTILOS PARA TRACKING DE TIEMPO EN TAREAS ===== */
+
+/* Estadísticas de tiempo total */
+.time-stats {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.time-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.time-stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.time-label {
+  color: #bdc3c7;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.time-value {
+  color: #ecf0f1;
+  font-weight: bold;
+  font-size: 0.95rem;
+  background: rgba(22, 160, 133, 0.2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(22, 160, 133, 0.3);
+}
+
+/* Tarea con tracking activo */
+.task-tracking-active {
+  border: 2px solid #16a085 !important;
+  background: rgba(22, 160, 133, 0.15) !important;
+  box-shadow: 0 0 20px rgba(22, 160, 133, 0.3) !important;
+  transform: translateX(8px);
+}
+
+/* Contenido de la tarea reorganizado */
+.task-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.task-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: #bdc3c7;
+  flex-wrap: wrap;
+}
+
+.task-time-created {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.task-time-spent {
+  font-weight: 600;
+  color: #48c9b0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+/* Acciones de la tarea */
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Botón de tracking */
+.track-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.track-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.tracking-active {
+  background: #16a085 !important;
+  border-color: #48c9b0 !important;
+  color: white !important;
+  box-shadow: 0 0 12px rgba(22, 160, 133, 0.6) !important;
+  animation: trackPulse 2s infinite;
+}
+
+@keyframes trackPulse {
+  0% { box-shadow: 0 0 8px rgba(22, 160, 133, 0.6); }
+  50% { box-shadow: 0 0 16px rgba(22, 160, 133, 0.8); }
+  100% { box-shadow: 0 0 8px rgba(22, 160, 133, 0.6); }
 }
 
 /* Responsive */
@@ -297,5 +430,68 @@
   
   .task-filters {
     flex-direction: column;
+  }
+  
+  .time-stats {
+    padding: 10px 12px;
+    margin-bottom: 15px;
+  }
+  
+  .time-label {
+    font-size: 0.85rem;
+  }
+  
+  .time-value {
+    font-size: 0.9rem;
+    padding: 3px 6px;
+  }
+  
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .task-content {
+    width: 100%;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .task-actions {
+    align-self: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .track-btn, .delete-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-stat-item {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .time-value {
+    align-self: flex-start;
+  }
+  
+  .task-actions {
+    gap: 6px;
+  }
+  
+  .track-btn, .delete-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
   }
 }

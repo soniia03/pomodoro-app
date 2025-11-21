@@ -11,10 +11,8 @@ function History({
   onSearchChange: (term: string) => void;
   totalSessions: number;
 }) {
-  // ✅ ESTADO PARA ORDENAR (Avanzado)
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
 
-  // ✅ REORDENAR LISTA (Avanzado)
   const sortedSessions = [...sessions].sort((a, b) => {
     return sortBy === 'newest' ? b.id - a.id : a.id - b.id;
   });
@@ -23,17 +21,16 @@ function History({
     <div className="history">
       <h3>📊 Historial de Sesiones</h3>
       
-      {/* ✅ INPUT CONTROLADO PARA BÚSQUEDA */}
+      {/* Controles de búsqueda y ordenamiento */}
       <div className="history-controls">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Buscar en historial..."
+          placeholder="🔍 Buscar por tipo o fecha..."
           className="search-input"
         />
         
-        {/* ✅ SELECT CONTROLADO (Básico) */}
         <select 
           value={sortBy} 
           onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest')}
@@ -44,30 +41,35 @@ function History({
         </select>
       </div>
 
-      {/* ✅ CONTADOR DE ELEMENTOS */}
+      {/* Estadísticas */}
       <div className="history-stats">
         <span>
-          Mostrando {sortedSessions.length} de {totalSessions} sesiones
+          {sortedSessions.length} de {totalSessions} sesiones
         </span>
       </div>
 
-      {/* ✅ LISTA DINÁMICA CON RENDERIZADO CONDICIONAL */}
+      {/* Lista de sesiones */}
       <div className="sessions-list">
         {sortedSessions.length === 0 ? (
-          <p className="no-sessions">
-            {totalSessions === 0 
-              ? 'Aún no hay sesiones completadas' 
-              : 'No se encontraron sesiones que coincidan con la búsqueda'
-            }
-          </p>
+          <div className="no-sessions">
+            <p>
+              {totalSessions === 0 
+                ? '🎯 Comienza tu primera sesión Pomodoro' 
+                : 'No hay sesiones que coincidan con tu búsqueda'
+              }
+            </p>
+            {totalSessions === 0 && (
+              <small>Tu historial se llenará aquí automáticamente</small>
+            )}
+          </div>
         ) : (
           sortedSessions.map(session => (
             <div key={session.id} className={`session-item ${session.mode}`}>
               <div className="session-mode">
-                {session.mode === 'work' ? '🎯 Trabajo' : '☕ Descanso'}
+                {session.mode === 'work' ? '💼 Sesión de trabajo' : '☕ Descanso'}
               </div>
               <div className="session-duration">
-                {session.duration} min
+                {session.duration} minutos
               </div>
               <div className="session-time">
                 {session.completedAt}

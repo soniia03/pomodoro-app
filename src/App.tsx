@@ -116,7 +116,10 @@ function App() {
   return (
     <div className={`app ${mode === 'work' ? 'appWork' : 'appBreak'}`}>
       <div className="container">
-        <h1 className="header">🍅 Pomodoro </h1>
+        {/* TÍTULO MÁS LARGO Y ANCHO */}
+        <div className="main-header">
+          <h1 className="app-title">🍅 Pomodoro 🍅</h1>
+        </div>
         
         <Timer 
           timeLeft={timeLeft} 
