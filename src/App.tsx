@@ -25,6 +25,11 @@ function App() {
   const [mode, setMode] = useState<'work' | 'break'>('work');
   const [completedSessions, setCompletedSessions] = useState(0);
   
+  // Estados de tiempo personalizable
+  const [workTime, setWorkTime] = useState(25); // en minutos
+  const [breakTime, setBreakTime] = useState(5); // en minutos
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  
   // Estados de tareas
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTrackingTask, setCurrentTrackingTask] = useState<Task | null>(null);
@@ -32,6 +37,11 @@ function App() {
   // Estados de la mascota
   const [petMood, setPetMood] = useState<'happy' | 'working' | 'sleeping' | 'excited'>('happy');
   const [petMessage, setPetMessage] = useState('¡Hola! Estoy listo para ayudarte 🍅');
+
+  // Inicializar timer con tiempos personalizados
+  useEffect(() => {
+    setTimeLeft(mode === 'work' ? workTime * 60 : breakTime * 60);
+  }, [workTime, breakTime, mode]);
 
   // Timer principal
   useEffect(() => {
@@ -91,12 +101,12 @@ function App() {
     if (mode === 'work') {
       setCompletedSessions(prev => prev + 1);
       setMode('break');
-      setTimeLeft(5 * 60);
+      setTimeLeft(breakTime * 60);
       setPetMood('excited');
       setPetMessage('¡Sesión completada! ¡Descansa un poco! 🎉');
     } else {
       setMode('work');
-      setTimeLeft(25 * 60);
+      setTimeLeft(workTime * 60);
       setPetMood('happy');
       setPetMessage('¡Volvamos al trabajo! 💼');
     }
@@ -116,9 +126,32 @@ function App() {
 
   const handleReset = () => {
     setIsRunning(false);
-    setTimeLeft(mode === 'work' ? 25 * 60 : 5 * 60);
+    setTimeLeft(mode === 'work' ? workTime * 60 : breakTime * 60);
     setPetMood('happy');
     setPetMessage('¡Reiniciado! ¿Empezamos de nuevo? 🔄');
+  };
+
+  const handleTimeChange = (newWorkTime: number, newBreakTime: number) => {
+    setWorkTime(newWorkTime);
+    setBreakTime(newBreakTime);
+    setTimeLeft(mode === 'work' ? newWorkTime * 60 : newBreakTime * 60);
+    setIsEditingTime(false);
+    setPetMood('excited');
+    setPetMessage(`¡Tiempos actualizados! Trabajo: ${newWorkTime}min, Descanso: ${newBreakTime}min ⏰`);
+  };
+
+  const handleQuickTimePreset = (preset: 'pomodoro' | 'short' | 'long') => {
+    switch (preset) {
+      case 'pomodoro':
+        handleTimeChange(25, 5);
+        break;
+      case 'short':
+        handleTimeChange(15, 3);
+        break;
+      case 'long':
+        handleTimeChange(45, 10);
+        break;
+    }
   };
 
   const handleAddTask = (taskText: string) => {
@@ -135,7 +168,6 @@ function App() {
       setPetMood('excited');
       setPetMessage('¡Nueva tarea agregada! 📝');
       
-      // Reset message after 3 seconds
       setTimeout(() => {
         setPetMessage('¡Sigue agregando tareas! 🎯');
       }, 3000);
@@ -148,7 +180,6 @@ function App() {
         setPetMood('excited');
         setPetMessage('¡Tarea completada! ¡Genial! ✅');
         
-        // Reset message after 3 seconds
         setTimeout(() => {
           setPetMessage('¡Sigue así! 💪');
         }, 3000);
@@ -165,7 +196,6 @@ function App() {
     setPetMood('happy');
     setPetMessage('¡Tarea eliminada! 🗑️');
     
-    // Reset message after 2 seconds
     setTimeout(() => {
       setPetMessage('¿Qué más necesitas hacer? 🤔');
     }, 2000);
@@ -208,7 +238,6 @@ function App() {
     setPetMood('excited');
     setPetMessage(randomMessage);
     
-    // Reset mood after 2 seconds
     setTimeout(() => {
       if (isRunning && mode === 'work') {
         setPetMood('working');
@@ -281,8 +310,90 @@ function App() {
               <div className="progress-bar">
                 <div 
                   className={`progress-fill ${mode === 'work' ? 'progress-work' : 'progress-break'}`}
-                  style={{ width: `${((mode === 'work' ? 25 * 60 : 5 * 60) - timeLeft) / (mode === 'work' ? 25 * 60 : 5 * 60) * 100}%` }}
+                  style={{ 
+                    width: `${((mode === 'work' ? workTime * 60 : breakTime * 60) - timeLeft) / 
+                            (mode === 'work' ? workTime * 60 : breakTime * 60) * 100}%` 
+                  }}
                 ></div>
+              </div>
+
+              {/* Controles de tiempo personalizable */}
+              <div className="time-controls">
+                {!isEditingTime ? (
+                  <div className="time-display-controls">
+                    <div className="time-settings">
+                      <span>Trabajo: {workTime}min</span>
+                      <span>Descanso: {breakTime}min</span>
+                    </div>
+                    <button 
+                      onClick={() => setIsEditingTime(true)}
+                      className="edit-time-btn"
+                    >
+                      ⚙️ Configurar Tiempos
+                    </button>
+                  </div>
+                ) : (
+                  <div className="time-edit-controls">
+                    <div className="time-input-group">
+                      <label>Trabajo (min):</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="120"
+                        value={workTime}
+                        onChange={(e) => setWorkTime(Number(e.target.value))}
+                        className="time-input"
+                      />
+                    </div>
+                    <div className="time-input-group">
+                      <label>Descanso (min):</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={breakTime}
+                        onChange={(e) => setBreakTime(Number(e.target.value))}
+                        className="time-input"
+                      />
+                    </div>
+                    <div className="time-edit-actions">
+                      <button 
+                        onClick={() => handleTimeChange(workTime, breakTime)}
+                        className="save-time-btn"
+                      >
+                        ✅ Guardar
+                      </button>
+                      <button 
+                        onClick={() => setIsEditingTime(false)}
+                        className="cancel-time-btn"
+                      >
+                        ❌ Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Presets rápidos */}
+                <div className="time-presets">
+                  <button 
+                    onClick={() => handleQuickTimePreset('pomodoro')}
+                    className="preset-btn"
+                  >
+                    🍅 25/5
+                  </button>
+                  <button 
+                    onClick={() => handleQuickTimePreset('short')}
+                    className="preset-btn"
+                  >
+                    ⏱️ 15/3
+                  </button>
+                  <button 
+                    onClick={() => handleQuickTimePreset('long')}
+                    className="preset-btn"
+                  >
+                    🚀 45/10
+                  </button>
+                </div>
               </div>
 
               <div className="session-info">
@@ -412,11 +523,12 @@ function App() {
               {petMessage}
             </div>
             <div className="pet-stats">
-              <div className="pet-stat">
-                <span>🎯 Sesiones: {completedSessions}</span>
-              </div>
+              
               <div className="pet-stat">
                 <span>✅ Tareas: {completedTasks}/{totalTasks}</span>
+              </div>
+              <div className="pet-stat">
+                <span>⏰ Tiempos: {workTime}/{breakTime}min</span>
               </div>
             </div>
           </div>
