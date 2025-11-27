@@ -1,4 +1,3 @@
-// src/components/TaskTimer.tsx
 import { useState, useEffect } from 'react';
 import './TaskTimer.css';
 
@@ -56,7 +55,6 @@ function TaskTimer({
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [dragIndex, setDragIndex] = useState<number | null>(null);
 
-  // Efecto para el tracking de tiempo
   useEffect(() => {
     let interval: number;
     
@@ -79,7 +77,6 @@ function TaskTimer({
     };
   }, [currentTask, mode, isRunning, onTimeUpdate]);
 
-  // Efecto para alertas de tiempo bajo
   useEffect(() => {
     if (timeLeft <= 60 && timeLeft > 0) {
       setIsTimeLow(true);
@@ -139,14 +136,12 @@ function TaskTimer({
     }
   };
 
-  // Función mejorada para toggle de tareas que guarda en historial
   const handleToggleTaskWithHistory = (taskId: number) => {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
       const newCompletedState = !task.completed;
       
       if (newCompletedState && task.timeSpent > 0 && onTaskCompleteToHistory) {
-        // Guardar en historial cuando se completa
         onTaskCompleteToHistory(task);
       }
       
@@ -385,11 +380,11 @@ function TaskTimer({
           )}
         </div>
 
-        {filteredTasks.length > 0 && (
+        {/* {filteredTasks.length > 0 && (
           <div className="drag-instructions">
             <small>💡 Arrastra las tareas para reordenarlas</small>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

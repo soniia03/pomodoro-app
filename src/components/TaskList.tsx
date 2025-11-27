@@ -25,13 +25,11 @@ function History({
   const [filter, setFilter] = useState<'all' | 'completed' | 'interrupted' | 'cancelled'>('all');
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
-  // Filtrar sesiones
   const filteredSessions = useMemo(() => {
     if (filter === 'all') return sessions;
     return sessions.filter(session => session.status === filter);
   }, [sessions, filter]);
 
-  // Estadísticas
   const stats = useMemo(() => {
     const totalSessions = sessions.length;
     const completedSessions = sessions.filter(s => s.status === 'completed').length;
@@ -86,7 +84,6 @@ function History({
         </div>
       </div>
 
-      {/* Panel de Estadísticas */}
       <div className="stats-panel">
         <div className="stat-card">
           <div className="stat-value">{stats.totalSessions}</div>
@@ -106,7 +103,6 @@ function History({
         </div>
       </div>
 
-      {/* Filtro simple */}
       <div className="filter-controls">
         <select 
           value={filter} 
@@ -120,7 +116,6 @@ function History({
         </select>
       </div>
 
-      {/* Lista de Sesiones */}
       <div className="sessions-list">
         {filteredSessions.length === 0 ? (
           <div className="no-sessions">
@@ -171,7 +166,6 @@ function History({
         )}
       </div>
 
-      {/* Modal de Detalles */}
       {selectedSession && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

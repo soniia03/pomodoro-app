@@ -11,7 +11,7 @@ function Controls({
   onReset: () => void; 
   onShowSettings: () => void; 
 }) {
-  // ✅ ESTADO LOCAL PARA ANIMACIÓN (Básico)
+
   const [isHovered, setIsHovered] = useState('');
 
   return (

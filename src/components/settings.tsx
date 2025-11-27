@@ -23,7 +23,6 @@ function Settings({
 
   const handleSave = () => {
     if (localWorkTime < 1 || localBreakTime < 1) {
-      // ✅ VALIDACIÓN DE FORMULARIO (Medio)
       setMessage('❌ Los tiempos deben ser de al menos 1 minuto');
       setTimeout(() => setMessage(''), 3000);
       return;
@@ -39,7 +38,6 @@ function Settings({
       <div className="settings-modal">
         <h3>⚙️ Configuración del Pomodoro</h3>
         
-        {/* ✅ MENSAJE TEMPORAL */}
         {message && (
           <div className={`message ${message.includes('❌') ? 'error' : 'success'}`}>
             {message}
